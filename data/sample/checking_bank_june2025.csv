@@ -1,0 +1,4 @@
+Account Number,Transaction Description,Transaction Date,Transaction Type,Transaction Amount,Balance
+123456789,STARBUCKS #1234,06/01/2025,Debit,-5.75,1000.25
+123456789,Payroll Deposit,06/03/2025,Credit,1500.00,2500.25
+123456789,AMAZON MKTPLACE PMTS,06/04/2025,Debit,-45.99,2454.26
