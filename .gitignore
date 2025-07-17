@@ -197,6 +197,7 @@ cython_debug/
 #  Ignore financial data but include examples and sample csv's
 /data/raw/
 /data/output/
+.logs/
 
 !data/sample/*
 
@@ -283,3 +284,4 @@ http-client.private.env.json
 # Apifox Helper cache
 .idea/.cache/.Apifox_Helper
 .idea/ApifoxUploaderProjectSetting.xml
+

@@ -1,20 +1,32 @@
 from datetime import datetime
 from typing import List, Dict
+from .logger import get_logger;
 
+logger = get_logger(__name__)
 
 def normalize_checking(rows: List[Dict]) -> List[Dict]:
+    REQUIRED_KEYS = ['Transaction Amount', 'Transaction Date', 'Transaction Description', 'Account Number']
     normalized = []
+
     for row in rows:
+        missing = [k for k in REQUIRED_KEYS if k not in row]
+        if missing:
+            logger.error(f"Missing {missing} in row {row}")
+            raise KeyError(f"Missing required fields {missing} in row: {row}")
+
         amount = float(row['Transaction Amount'])
+
         normalized.append({
             'Date': _parse_date(row['Transaction Date']),
             'Description': row['Transaction Description'].strip(),
             'Amount': amount,
-            'Category': None,  # will be set later
+            'Category': None,
             'Account': _mask_account(row['Account Number']),
             'Source': 'Chase Checking'
         })
+
     return normalized
+
 
 
 def normalize_credit(rows: List[Dict]) -> List[Dict]:
