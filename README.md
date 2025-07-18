@@ -10,3 +10,12 @@ PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_jun
 ```
 
 This will read the CSV, normalize each row, convert it into `Transaction` objects and log the parsed transactions. Use `--kind credit` for credit card statements.
+## Local Postgres Setup
+
+A `docker-compose.yml` is provided to run a development Postgres instance. Start it with:
+
+```bash
+docker compose up -d db
+```
+
+The database will be available on `localhost:5432` with the default credentials defined in the compose file. An initialization script creates a `transactions` table that can be extended with categories and budgets.
