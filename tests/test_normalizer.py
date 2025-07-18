@@ -45,6 +45,7 @@ def test_malformed_amount_is_skipped():
         ("06/1/2025", "2025-06-01"),
         ("2025-06-01", "2025-06-01"),
         ("06-01-2025", "06-01-2025"),
+        ("08/10/23", "2023-08-10"),
     ],
 )
 def test_parse_date_various_formats(input_date, expected):

@@ -76,11 +76,21 @@ def normalize_credit(rows: List[Dict]) -> List[Dict]:
 
 
 def _parse_date(date_str: str) -> str:
-    try:
-        return datetime.strptime(date_str, '%m/%d/%Y').strftime('%Y-%m-%d')
-    except ValueError:
-        logger.warning(f"Failed to parse date: {date_str}")
-        return date_str
+    """Parse a date string into ``YYYY-mm-dd`` format.
+
+    The function primarily expects ``mm/dd/YYYY`` but also supports two digit
+    years (``mm/dd/YY``) as some providers export dates in that style.
+    Unknown formats are returned as-is while emitting a warning.
+    """
+
+    for fmt in ("%m/%d/%Y", "%m/%d/%y"):
+        try:
+            return datetime.strptime(date_str, fmt).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+
+    logger.warning(f"Failed to parse date: {date_str}")
+    return date_str
 
 
 def _mask_account(acc_num: str) -> str:
