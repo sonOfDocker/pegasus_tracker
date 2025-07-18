@@ -1,5 +1,5 @@
 import pytest
-from pegasus_tracker.normalizer import normalize_checking
+from pegasus_tracker.normalizer import normalize_checking, _parse_date
 
 
 def test_unknown_column_raises_key_error():
@@ -35,3 +35,44 @@ def test_malformed_amount_is_skipped():
     ]
     result = normalize_checking(rows)
     assert result == []
+
+
+@pytest.mark.parametrize(
+    "input_date,expected",
+    [
+        ("06/01/2025", "2025-06-01"),
+        ("6/1/2025", "2025-06-01"),
+        ("06/1/2025", "2025-06-01"),
+        ("2025-06-01", "2025-06-01"),
+        ("06-01-2025", "06-01-2025"),
+    ],
+)
+def test_parse_date_various_formats(input_date, expected):
+    """_parse_date should gracefully handle subtly different date formats."""
+    assert _parse_date(input_date) == expected
+
+
+def test_amount_with_comma_is_skipped():
+    """Rows with a thousand separators should be skipped as malformed amounts."""
+    rows = [
+        {
+            'Account Number': '9999888877776666',
+            'Transaction Description': 'Payment',
+            'Transaction Date': '06/12/2025',
+            'Transaction Amount': '1,234.56',
+        }
+    ]
+    assert normalize_checking(rows) == []
+
+
+def test_amount_with_parentheses_is_skipped():
+    """Rows using parentheses for negatives should be skipped as malformed."""
+    rows = [
+        {
+            'Account Number': '9999888877776666',
+            'Transaction Description': 'Adjustment',
+            'Transaction Date': '06/13/2025',
+            'Transaction Amount': '(123.45)',
+        }
+    ]
+    assert normalize_checking(rows) == []
