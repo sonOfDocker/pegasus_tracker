@@ -2,6 +2,7 @@ from datetime import datetime
 from pegasus_tracker.models import Transaction
 
 def test_transaction_creation():
+    """It should create a Transaction object with all fields correctly assigned."""
     tx = Transaction(
         date=datetime(2025, 6, 30),
         account="Chase Checking",
@@ -19,6 +20,7 @@ def test_transaction_creation():
     assert tx.source == "chase_june2025.csv"
 
 def test_income_expense_flags():
+    """It should correctly classify transactions as income or expense based on amount."""
     income = Transaction(
         date=datetime.now(),
         account="PayPal",
