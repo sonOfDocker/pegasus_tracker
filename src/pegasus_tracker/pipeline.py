@@ -48,7 +48,12 @@ def rows_to_transactions(rows: List[dict]) -> List[Transaction]:
     return txs
 
 
-def process_file(filepath: str, kind: str, store: bool = False) -> List[Transaction]:
+def process_file(
+    filepath: str,
+    kind: str,
+    store: bool = False,
+    dsn: str | None = None,
+) -> List[Transaction]:
     if kind not in READERS:
         raise ValueError(f"Unknown file kind '{kind}'")
     logger.info("Reading %s file: %s", kind, filepath)
@@ -62,7 +67,7 @@ def process_file(filepath: str, kind: str, store: bool = False) -> List[Transact
 
     if store:
         try:
-            insert_transactions(txs)
+            insert_transactions(txs, dsn=dsn)
             logger.info("Inserted %d transactions into the database", len(txs))
         except Exception as exc:
             logger.error("Failed to store transactions: %s", exc)
@@ -83,8 +88,14 @@ def main(argv=None):
         action="store_true",
         help="Persist parsed transactions to the Postgres database",
     )
+    parser.add_argument(
+        "--dsn",
+        help=(
+            "Postgres DSN. Defaults to env PEGASUS_DB_DSN or local compose settings"
+        ),
+    )
     args = parser.parse_args(argv)
-    process_file(args.filepath, args.kind, store=args.store)
+    process_file(args.filepath, args.kind, store=args.store, dsn=args.dsn)
 
 
 if __name__ == "__main__":

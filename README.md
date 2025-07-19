@@ -25,3 +25,14 @@ Once Postgres is running you can persist parsed transactions by including the `-
 ```bash
 PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking --store
 ```
+
+By default the CLI connects using the credentials from `docker-compose.yml`.
+To override them set the `PEGASUS_DB_DSN` environment variable or pass
+`--dsn`:
+
+```bash
+export PEGASUS_DB_DSN=postgresql://pegasus_user:pegasus_pass@localhost:5432/pegasus
+PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking --store
+# or specify explicitly
+PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking --store --dsn "$PEGASUS_DB_DSN"
+```

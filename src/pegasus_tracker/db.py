@@ -1,9 +1,24 @@
 import os
 from typing import Iterable
+
 from .models import Transaction
 from .logger import get_logger
 
 logger = get_logger(__name__)
+
+# Default DSN matches credentials defined in docker-compose.yml
+DEFAULT_DSN = (
+    "postgresql://pegasus_user:pegasus_pass@localhost:5432/pegasus"
+)
+
+
+def get_dsn() -> str:
+    """Return the Postgres connection string.
+
+    The value is taken from the ``PEGASUS_DB_DSN`` environment variable if set
+    otherwise the credentials from ``docker-compose.yml`` are used.
+    """
+    return os.getenv("PEGASUS_DB_DSN", DEFAULT_DSN)
 
 
 def insert_transactions(transactions: Iterable[Transaction], dsn: str | None = None) -> None:
@@ -14,8 +29,9 @@ def insert_transactions(transactions: Iterable[Transaction], dsn: str | None = N
     transactions:
         Iterable of Transaction instances to persist.
     dsn:
-        Optional DSN string. If omitted, connection parameters are read from the
-        environment using the standard ``PG*`` variables.
+        Optional DSN string. If omitted, :func:`get_dsn` is used which reads the
+        ``PEGASUS_DB_DSN`` environment variable or falls back to the default
+        connection string.
     """
     try:
         import psycopg2
@@ -23,7 +39,7 @@ def insert_transactions(transactions: Iterable[Transaction], dsn: str | None = N
         logger.error("psycopg2 is required for database operations: %s", exc)
         raise
 
-    conn = psycopg2.connect(dsn or "")
+    conn = psycopg2.connect(dsn or get_dsn())
     try:
         with conn.cursor() as cur:
             for tx in transactions:
