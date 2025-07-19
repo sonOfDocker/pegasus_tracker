@@ -3,10 +3,10 @@ A privacy-focused personal finance tracking system for aggregating bank data, re
 
 ## Processing CSV Files
 
-A simple CLI is available to parse sample CSVs and inspect the normalized transactions.
+A simple CLI is available to parse sample CSVs and inspect the normalized transactions or persist them to Postgres.
 
 ```bash
-PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking
+PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking --store
 ```
 
 This will read the CSV, normalize each row, convert it into `Transaction` objects and log the parsed transactions. Use `--kind credit` for credit card statements.
@@ -19,3 +19,9 @@ docker compose up -d db
 ```
 
 The database will be available on `localhost:5432` with the default credentials defined in the compose file. An initialization script creates a `transactions` table that can be extended with categories and budgets.
+
+Once Postgres is running you can persist parsed transactions by including the `--store` flag when running the CLI:
+
+```bash
+PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking --store
+```

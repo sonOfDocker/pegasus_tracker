@@ -6,6 +6,7 @@ from .reader import read_checking_csv, read_credit_csv
 from .normalizer import normalize_checking, normalize_credit
 from .models import Transaction
 from .logger import get_logger
+from .db import insert_transactions
 
 logger = get_logger(__name__)
 
@@ -47,7 +48,7 @@ def rows_to_transactions(rows: List[dict]) -> List[Transaction]:
     return txs
 
 
-def process_file(filepath: str, kind: str) -> List[Transaction]:
+def process_file(filepath: str, kind: str, store: bool = False) -> List[Transaction]:
     if kind not in READERS:
         raise ValueError(f"Unknown file kind '{kind}'")
     logger.info("Reading %s file: %s", kind, filepath)
@@ -58,6 +59,13 @@ def process_file(filepath: str, kind: str) -> List[Transaction]:
     txs = rows_to_transactions(normalized)
     for tx in txs:
         logger.info("Parsed: %s", tx)
+
+    if store:
+        try:
+            insert_transactions(txs)
+            logger.info("Inserted %d transactions into the database", len(txs))
+        except Exception as exc:
+            logger.error("Failed to store transactions: %s", exc)
     return txs
 
 
@@ -70,8 +78,13 @@ def main(argv=None):
         default="checking",
         help="Type of CSV file (checking or credit)",
     )
+    parser.add_argument(
+        "--store",
+        action="store_true",
+        help="Persist parsed transactions to the Postgres database",
+    )
     args = parser.parse_args(argv)
-    process_file(args.filepath, args.kind)
+    process_file(args.filepath, args.kind, store=args.store)
 
 
 if __name__ == "__main__":
