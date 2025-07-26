@@ -29,4 +29,4 @@ def read_credit_csv(filepath: str) -> List[Dict]:
         raise
     except csv.Error as exc:
         logger.error(f"CSV parsing error for {filepath}: {exc}")
-        raise
+        raiseq

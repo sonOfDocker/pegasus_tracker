@@ -1,15 +1,25 @@
 import os
 from typing import Iterable
-
+from dotenv import load_dotenv
 from .models import Transaction
 from .logger import get_logger
 
 logger = get_logger(__name__)
 
-# Default DSN matches credentials defined in docker-compose.yml
-DEFAULT_DSN = (
-    "postgresql://pegasus_user:pegasus_pass@localhost:5432/pegasus"
-)
+
+
+# Load .env file
+load_dotenv()
+
+# Pull from environment
+DB_USER = os.getenv("PGUSER")
+DB_PASS = os.getenv("PGPASSWORD")
+DB_HOST = os.getenv("PGHOST", "localhost")
+DB_PORT = os.getenv("PGPORT", "5432")
+DB_NAME = os.getenv("PGDATABASE")
+
+# Build the DSN
+DEFAULT_DSN = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 
 def get_dsn() -> str:

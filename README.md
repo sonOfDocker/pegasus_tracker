@@ -20,13 +20,13 @@ docker compose up -d db
 
 The database will be available on `localhost:5432` with the default credentials defined in the compose file. An initialization script creates a `transactions` table that can be extended with categories and budgets.
 
-Once Postgres is running you can persist parsed transactions by including the `--store` flag when running the CLI:
+Once Postgres is running you can persist parsed transactions by including the `--store` flag when running the CLI: 
 
 ```bash
 PYTHONPATH=src python3 -m pegasus_tracker.pipeline data/sample/checking_bank_june2025.csv --kind checking --store
 ```
 
-By default the CLI connects using the credentials from `docker-compose.yml`.
+By default, the CLI connects using the credentials from `docker-compose.yml`, maintained in .env file.
 To override them set the `PEGASUS_DB_DSN` environment variable or pass
 `--dsn`:
 
