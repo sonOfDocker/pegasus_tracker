@@ -2,7 +2,8 @@ import argparse
 from datetime import datetime
 from typing import List
 
-from .reader import read_checking_csv, read_credit_csv
+from .readers.utility_reader import read_checking_csv
+from .readers.bank_reader import read_credit_csv
 from .normalizer import normalize_checking, normalize_credit
 from .models import Transaction
 from .logger import get_logger
