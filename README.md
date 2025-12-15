@@ -1,5 +1,13 @@
 # pegasus-tracker
-A privacy-focused personal finance tracking system for aggregating bank data, receipts, and expenses from various sources. Built with Python and designed for secure, local analysis.
+
+Pegasus is a privacy-first personal finance platform designed to help households track, analyze, and budget their finances without relying on third-party aggregators.
+
+The system ingests financial data from multiple sources—such as bank and credit card CSVs, Amazon order reports, and other vendor exports—and standardizes it into a clean, consistent model. This unified pipeline provides a single source of truth for cash flow, spending insights, and budgeting workflows.
+
+Pegasus is built with a modular architecture that supports local-first data processing, user-controlled storage, and future extensions for automation and intelligent analysis.
+
+**Focus:** Secure household finance tracking • Data normalization • Budgeting • Extensible architecture
+
 
 ## Processing CSV Files
 
